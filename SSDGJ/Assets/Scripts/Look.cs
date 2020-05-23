@@ -19,7 +19,7 @@ public class Look : MonoBehaviour
 
     public Transform body;
 
-    float Xrotation = 0f;
+    float Xrotation;
 
     Vector2 lookDir;
 
@@ -52,7 +52,7 @@ public class Look : MonoBehaviour
         Xrotation -= lookDir.y;
         Xrotation = Mathf.Clamp(Xrotation, -90f, 90f);
 
-        transform.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
+        transform.localRotation = Quaternion.Euler(Xrotation, 180f, 0f);
 
         body.Rotate(Vector3.up * lookDir.x);
     }

@@ -20,12 +20,10 @@ public class MainPlayer : MonoBehaviour
 
     public float speed;
 
-    bool isGrounded;
+    public Vector3 velocity;
+    float velocityY;
 
-    Vector3 velocity;
-    float velocityY = 0;
-
-    Rigidbody rb;
+    public Rigidbody rb;
 
     [Header("Gravity Variables")]
     public float gravityUp;
@@ -40,18 +38,34 @@ public class MainPlayer : MonoBehaviour
     public float onPlatformTimerMax;
     public bool onTopOfPlatform;
 
+    [Header("Character Parts")]
+    List<Collider> characterParts = new List<Collider>();
+    bool isRagdoll;
+
     private void Awake()
     {
         //Rewired Code
         player1 = ReInput.players.GetPlayer(0);
         player2 = ReInput.players.GetPlayer(1);
         ReInput.ControllerConnectedEvent += OnControllerConnected;
+
+        Collider[] characterJoints = gameObject.GetComponentsInChildren<Collider>();
+        foreach (Collider c in characterJoints)
+        {
+            if (c.gameObject != this.gameObject)
+            {
+                c.isTrigger = true;
+                c.attachedRigidbody.isKinematic = true;
+                characterParts.Add(c);
+                
+            }
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        
     }
 
     // Update is called once per frame
@@ -59,25 +73,31 @@ public class MainPlayer : MonoBehaviour
     {
         Movement();
 
-        Gravity();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ActivateRagdoll();
+        }
+
     }
 
     private void FixedUpdate()
     {
         FixedMovement();
+
+        Gravity();
     }
 
     void Movement()
     {
         if (playerNum == 1)
         {
-            velocity = new Vector3(player2.GetAxis("MoveX"), velocityY, player2.GetAxis("MoveZ")) * speed;
+            velocity = new Vector3(player2.GetAxis("MoveX") * speed, velocityY, player2.GetAxis("MoveZ") * speed);
             //jump logic
             if (onPlatformTimer > 0)
             {
                 if (player1.GetButtonDown("Jump"))
                 {
-                    velocity.y = jumpVel;
+                    velocityY = jumpVel;
                     jumpTimer = jumpTimerMax;
                     isJumping = true;
                 }
@@ -86,7 +106,7 @@ public class MainPlayer : MonoBehaviour
             {
                 if (player1.GetButtonDown("Jump"))
                 {
-                    velocity.y = jumpVel;
+                    velocityY = jumpVel;
                     jumpTimer = jumpTimerMax;
                     isJumping = true;
                     doubleJump = false;
@@ -94,7 +114,7 @@ public class MainPlayer : MonoBehaviour
             }
             if (player1.GetButton("Jump") && isJumping)
             {
-                velocity.y = jumpVel;
+                velocityY = jumpVel;
                 jumpTimer -= Time.deltaTime;
             }
 
@@ -105,13 +125,13 @@ public class MainPlayer : MonoBehaviour
         }
         else if(playerNum == 2)
         {
-            velocity = new Vector3(player1.GetAxis("MoveX"), velocityY, player1.GetAxis("MoveZ")) * speed;
+            velocity = new Vector3(player1.GetAxis("MoveX") * speed, velocityY, player1.GetAxis("MoveZ") * speed);
             //jump logic
             if (onPlatformTimer > 0)
             {
                 if (player2.GetButtonDown("Jump"))
                 {
-                    velocity.y = jumpVel;
+                    velocityY = jumpVel;
                     jumpTimer = jumpTimerMax;
                     isJumping = true;
                 }
@@ -120,7 +140,7 @@ public class MainPlayer : MonoBehaviour
             {
                 if (player2.GetButtonDown("Jump"))
                 {
-                    velocity.y = jumpVel;
+                    velocityY = jumpVel;
                     jumpTimer = jumpTimerMax;
                     isJumping = true;
                     doubleJump = false;
@@ -128,7 +148,7 @@ public class MainPlayer : MonoBehaviour
             }
             if (player2.GetButton("Jump") && isJumping)
             {
-                velocity.y = jumpVel;
+                velocityY = jumpVel;
                 jumpTimer -= Time.deltaTime;
             }
 
@@ -161,28 +181,78 @@ public class MainPlayer : MonoBehaviour
 
     void Gravity()
     {
-        //gravity logic
-        if (velocity.y > -maxDownVel)
-        { //if we haven't reached maxDownVel
-            if (velocity.y > 0)
-            { //if player is moving up
-                velocity.y -= gravityUp * Time.fixedDeltaTime;
+        if (!isRagdoll)
+        {
+            //gravity logic
+            if (velocityY > -maxDownVel)
+            { //if we haven't reached maxDownVel
+                if (velocityY > 0)
+                { //if player is moving up
+                    velocityY -= gravityUp * Time.fixedDeltaTime;
+                }
+                else
+                { //if player is moving down
+                    velocityY -= gravityDown * Time.fixedDeltaTime;
+                }
             }
-            else
-            { //if player is moving down
-                velocity.y -= gravityDown * Time.fixedDeltaTime;
-            }
+        }
+        else
+        {
+            velocity = Vector3.zero;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collisionInfo)
+    void ActivateRagdoll()
     {
-        foreach (ContactPoint2D contact in collisionInfo.contacts)
+        if (isRagdoll)
+        {
+            this.GetComponent<BoxCollider>().enabled = true;
+            if (this.GetComponent<Animator>() != null)
+            {
+                this.GetComponent<Animator>().enabled = true;
+                //add back original animator avatar
+                this.GetComponent<Animator>().avatar = null;
+            }
+            foreach (Collider c in characterParts)
+            {
+                if (c.gameObject != this.gameObject)
+                {
+                    c.isTrigger = true;
+                    c.attachedRigidbody.velocity = Vector3.zero;
+                    c.attachedRigidbody.isKinematic = true;
+                }
+            }
+            isRagdoll = false;
+        }
+        else
+        {
+            this.GetComponent<BoxCollider>().enabled = false;
+            if (this.GetComponent<Animator>() != null)
+            {
+                this.GetComponent<Animator>().enabled = false;
+                this.GetComponent<Animator>().avatar = null;
+            }
+            foreach (Collider c in characterParts)
+            {
+                if (c.gameObject != this.gameObject)
+                {
+                    c.isTrigger = false;
+                    c.attachedRigidbody.isKinematic = false;
+                }
+            }
+            isRagdoll = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collisionInfo)
+    {
+        Debug.Log(collisionInfo.gameObject.name);
+        foreach (ContactPoint contact in collisionInfo.contacts)
         {
             //am I coming from the top/bottom?
             if (Mathf.Abs(contact.normal.y) > Mathf.Abs(contact.normal.x))
             {
-                velocity.y = 0; //stop vertical velocity
+                velocityY = 0; //stop vertical velocity
                 if (contact.normal.y >= 0)
                 { //am I hitting the top of the platform?
 
@@ -192,7 +262,7 @@ public class MainPlayer : MonoBehaviour
                 if (contact.normal.y < 0)
                 {
                     //hitHead = true;
-                    velocity.y = 0;
+                    velocityY = 0;
                     //gotHitTimer = 0;
                     //maxKnockbackTime = 0;
 
@@ -201,14 +271,14 @@ public class MainPlayer : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collisionInfo)
+    private void OnCollisionStay(Collision collisionInfo)
     {
-        foreach (ContactPoint2D contact in collisionInfo.contacts)
+        foreach (ContactPoint contact in collisionInfo.contacts)
         {
             //am I coming from the top/bottom?
             if (Mathf.Abs(contact.normal.y) > Mathf.Abs(contact.normal.x))
             {
-                //velocity.y = 0; //stop vertical velocity
+                //velocityY = 0; //stop vertical velocity
                 if (contact.normal.y >= 0)
                 { //am I hitting the top of the platform?
 
@@ -218,7 +288,7 @@ public class MainPlayer : MonoBehaviour
                 if (contact.normal.y < 0)
                 {
                     //hitHead = true;
-                    velocity.y = 0;
+                    velocityY = 0;
                     //gotHitTimer = 0;
                     //maxKnockbackTime = 0;
 
@@ -227,7 +297,7 @@ public class MainPlayer : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collisionInfo)
+    private void OnCollisionExit(Collision collisionInfo)
     {
         onTopOfPlatform = false;
     }
