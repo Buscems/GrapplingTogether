@@ -42,6 +42,9 @@ public class MainPlayer : MonoBehaviour
     List<Collider> characterParts = new List<Collider>();
     bool isRagdoll;
 
+    [Header("Test")]
+    public bool test;
+
     private void Awake()
     {
         //Rewired Code
@@ -49,15 +52,18 @@ public class MainPlayer : MonoBehaviour
         player2 = ReInput.players.GetPlayer(1);
         ReInput.ControllerConnectedEvent += OnControllerConnected;
 
-        Collider[] characterJoints = gameObject.GetComponentsInChildren<Collider>();
-        foreach (Collider c in characterJoints)
+        if (!test)
         {
-            if (c.gameObject != this.gameObject)
+            Collider[] characterJoints = gameObject.GetComponentsInChildren<Collider>();
+            foreach (Collider c in characterJoints)
             {
-                c.isTrigger = true;
-                c.attachedRigidbody.isKinematic = true;
-                characterParts.Add(c);
-                
+                if (c.gameObject != this.gameObject)
+                {
+                    c.isTrigger = true;
+                    c.attachedRigidbody.isKinematic = true;
+                    characterParts.Add(c);
+
+                }
             }
         }
     }
@@ -89,6 +95,55 @@ public class MainPlayer : MonoBehaviour
 
     void Movement()
     {
+        if (test)
+        {
+            velocity = new Vector3(player1.GetAxis("MoveX") * -speed, velocityY, player1.GetAxis("MoveZ") * -speed);
+            //jump logic
+            if (onPlatformTimer > 0)
+            {
+                if (player1.GetButtonDown("Jump"))
+                {
+                    velocityY = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                }
+            }
+            if (onPlatformTimer < 0 && doubleJump)
+            {
+                if (player1.GetButtonDown("Jump"))
+                {
+                    velocityY = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                    doubleJump = false;
+                }
+            }
+            if (player1.GetButton("Jump") && isJumping)
+            {
+                velocityY = jumpVel;
+                jumpTimer -= Time.deltaTime;
+            }
+
+            if (player1.GetButtonUp("Jump") || jumpTimer <= 0)
+            {
+                isJumping = false;
+            }
+
+            velocity = transform.worldToLocalMatrix.inverse * velocity;
+
+            //set timer that will let the player jump slightly off the platform
+            if (onTopOfPlatform)
+            {
+                onPlatformTimer = onPlatformTimerMax;
+                doubleJump = true;
+            }
+            else
+            {
+                onPlatformTimer -= Time.deltaTime;
+            }
+
+            return;
+        }
         if (playerNum == 1)
         {
             velocity = new Vector3(player2.GetAxis("MoveX") * speed, velocityY, player2.GetAxis("MoveZ") * speed);
@@ -195,10 +250,6 @@ public class MainPlayer : MonoBehaviour
                     velocityY -= gravityDown * Time.fixedDeltaTime;
                 }
             }
-        }
-        else
-        {
-            velocity = Vector3.zero;
         }
     }
 
