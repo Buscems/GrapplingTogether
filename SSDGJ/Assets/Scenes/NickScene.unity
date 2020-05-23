@@ -1471,13 +1471,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNum: 1
   speed: 5
-  gravityUp: 0
-  gravityDown: 0
-  jumpVel: 0
-  jumpTimerMax: 0
-  maxDownVel: 0
+  gravityUp: 15
+  gravityDown: 10
+  jumpVel: 5
+  jumpTimerMax: 0.2
+  maxDownVel: 20
   onPlatformTimer: 0
-  onPlatformTimerMax: 0
+  onPlatformTimerMax: 0.075
   onTopOfPlatform: 0
 --- !u!54 &1471300935
 Rigidbody:
@@ -1546,13 +1546,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNum: 2
   speed: 5
-  gravityUp: 0
-  gravityDown: 0
-  jumpVel: 0
-  jumpTimerMax: 0
-  maxDownVel: 0
+  gravityUp: 15
+  gravityDown: 10
+  jumpVel: 5
+  jumpTimerMax: 0.2
+  maxDownVel: 20
   onPlatformTimer: 0
-  onPlatformTimerMax: 0
+  onPlatformTimerMax: 0.075
   onTopOfPlatform: 0
 --- !u!136 &1977569174
 CapsuleCollider:

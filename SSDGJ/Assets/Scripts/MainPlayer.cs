@@ -72,12 +72,86 @@ public class MainPlayer : MonoBehaviour
         if (playerNum == 1)
         {
             velocity = new Vector3(player2.GetAxis("MoveX"), velocityY, player2.GetAxis("MoveZ")) * speed;
+            //jump logic
+            if (onPlatformTimer > 0)
+            {
+                if (player1.GetButtonDown("Jump"))
+                {
+                    velocity.y = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                }
+            }
+            if (onPlatformTimer < 0 && doubleJump)
+            {
+                if (player1.GetButtonDown("Jump"))
+                {
+                    velocity.y = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                    doubleJump = false;
+                }
+            }
+            if (player1.GetButton("Jump") && isJumping)
+            {
+                velocity.y = jumpVel;
+                jumpTimer -= Time.deltaTime;
+            }
+
+            if (player1.GetButtonUp("Jump") || jumpTimer <= 0)
+            {
+                isJumping = false;
+            }
         }
         else if(playerNum == 2)
         {
             velocity = new Vector3(player1.GetAxis("MoveX"), velocityY, player1.GetAxis("MoveZ")) * speed;
+            //jump logic
+            if (onPlatformTimer > 0)
+            {
+                if (player2.GetButtonDown("Jump"))
+                {
+                    velocity.y = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                }
+            }
+            if (onPlatformTimer < 0 && doubleJump)
+            {
+                if (player2.GetButtonDown("Jump"))
+                {
+                    velocity.y = jumpVel;
+                    jumpTimer = jumpTimerMax;
+                    isJumping = true;
+                    doubleJump = false;
+                }
+            }
+            if (player2.GetButton("Jump") && isJumping)
+            {
+                velocity.y = jumpVel;
+                jumpTimer -= Time.deltaTime;
+            }
+
+            if (player2.GetButtonUp("Jump") || jumpTimer <= 0)
+            {
+                isJumping = false;
+            }
         }
         velocity = transform.worldToLocalMatrix.inverse * velocity;
+
+        
+
+        //set timer that will let the player jump slightly off the platform
+        if (onTopOfPlatform)
+        {
+            onPlatformTimer = onPlatformTimerMax;
+            doubleJump = true;
+        }
+        else
+        {
+            onPlatformTimer -= Time.deltaTime;
+        }
+
     }
 
     void FixedMovement()
@@ -99,6 +173,63 @@ public class MainPlayer : MonoBehaviour
                 velocity.y -= gravityDown * Time.fixedDeltaTime;
             }
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collisionInfo)
+    {
+        foreach (ContactPoint2D contact in collisionInfo.contacts)
+        {
+            //am I coming from the top/bottom?
+            if (Mathf.Abs(contact.normal.y) > Mathf.Abs(contact.normal.x))
+            {
+                velocity.y = 0; //stop vertical velocity
+                if (contact.normal.y >= 0)
+                { //am I hitting the top of the platform?
+
+                    onTopOfPlatform = true;
+                }
+                //am I hitting the bottom of a platform?
+                if (contact.normal.y < 0)
+                {
+                    //hitHead = true;
+                    velocity.y = 0;
+                    //gotHitTimer = 0;
+                    //maxKnockbackTime = 0;
+
+                }
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collisionInfo)
+    {
+        foreach (ContactPoint2D contact in collisionInfo.contacts)
+        {
+            //am I coming from the top/bottom?
+            if (Mathf.Abs(contact.normal.y) > Mathf.Abs(contact.normal.x))
+            {
+                //velocity.y = 0; //stop vertical velocity
+                if (contact.normal.y >= 0)
+                { //am I hitting the top of the platform?
+
+                    onTopOfPlatform = true;
+                }
+                //am I hitting the bottom of a platform?
+                if (contact.normal.y < 0)
+                {
+                    //hitHead = true;
+                    velocity.y = 0;
+                    //gotHitTimer = 0;
+                    //maxKnockbackTime = 0;
+
+                }
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collisionInfo)
+    {
+        onTopOfPlatform = false;
     }
 
     //[REWIRED METHODS]
