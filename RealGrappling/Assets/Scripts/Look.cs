@@ -48,7 +48,7 @@ public class Look : MonoBehaviour
             lookDir.x = player2.GetAxis("LookX") * sensitivity * Time.deltaTime;
             lookDir.y = player2.GetAxis("LookY") * sensitivity * Time.deltaTime;
         }
-        Xrotation -= -lookDir.y;
+        Xrotation -= lookDir.y;
         Xrotation = Mathf.Clamp(Xrotation, -90f, 90f);
 
         transform.localRotation = Quaternion.Euler(Xrotation, 0, 0f);

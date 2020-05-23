@@ -97,7 +97,7 @@ public class MainPlayer : MonoBehaviour
     {
         if (test)
         {
-            velocity = new Vector3(player1.GetAxis("MoveX") * -speed, velocityY, player1.GetAxis("MoveZ") * -speed);
+            velocity = new Vector3(player1.GetAxis("MoveX") * speed, 0, player1.GetAxis("MoveZ") * speed);
             //jump logic
             if (onPlatformTimer > 0)
             {
@@ -332,7 +332,7 @@ public class MainPlayer : MonoBehaviour
                 //velocityY = 0; //stop vertical velocity
                 if (contact.normal.y >= 0)
                 { //am I hitting the top of the platform?
-
+                    velocityY = 0;
                     onTopOfPlatform = true;
                 }
                 //am I hitting the bottom of a platform?
