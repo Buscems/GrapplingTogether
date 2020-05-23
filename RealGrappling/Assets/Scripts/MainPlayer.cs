@@ -23,7 +23,7 @@ public class MainPlayer : MonoBehaviour
     public Vector3 velocity;
     float velocityY;
 
-    public Rigidbody rb;
+    private Rigidbody rb;
 
     [Header("Gravity Variables")]
     public float gravityUp;
@@ -71,7 +71,7 @@ public class MainPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -97,7 +97,7 @@ public class MainPlayer : MonoBehaviour
     {
         if (test)
         {
-            velocity = new Vector3(player1.GetAxis("MoveX") * speed, 0, player1.GetAxis("MoveZ") * speed);
+            velocity = new Vector3(player1.GetAxis("MoveX") * speed, velocityY, player1.GetAxis("MoveZ") * speed);
             //jump logic
             if (onPlatformTimer > 0)
             {

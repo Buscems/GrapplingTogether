@@ -52,6 +52,11 @@ public class GrapplingHook : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        DrawRope();
+    }
+
     void StartGrapple()
     {
         RaycastHit hit;
@@ -67,16 +72,37 @@ public class GrapplingHook : MonoBehaviour
             joint.maxDistance = distanceFromPoint * maxJointDistance;
             joint.minDistance = distanceFromPoint * minJointDistance;
 
-            joint.spring = 2f;
-            joint.damper = 20f;
-            joint.massScale = 4.5f;
+            joint.spring = 8f;
+            joint.damper = 6f;
+            joint.massScale = 6f;
+
+            lr.positionCount = 2;
+
         }
+    }
+
+    void DrawRope()
+    {
+        if (!joint) return;
+        lr.SetPosition(index: 0, gunTip.position);
+        lr.SetPosition(index: 1, grapplePoint);
     }
 
     void StopGrapple()
     {
-
+        lr.positionCount = 0;
+        Destroy(joint);
     } 
+
+    public bool IsGrappling()
+    {
+        return joint != null;
+    }
+
+    public Vector3 GetGrapplePoint()
+    {
+        return grapplePoint;
+    }
 
     //[REWIRED METHODS]
     //these two methods are for ReWired, if any of you guys have any questions about it I can answer them, but you don't need to worry about this for working on the game - Buscemi
