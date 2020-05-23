@@ -24,11 +24,11 @@ public class VoiceRecognition : MonoBehaviour
         actions.Add("fuck off", MakeHarder);
         actions.Add("are you fucking kidding me", MakeHarder);
         actions.Add("come the fuck on", MakeHarder);
-        actions.Add("shit", MakeHarder);
+        actions.Add("fuck man", MakeHarder);
 
         actions.Add("sorry", Apologize);
 
-        keyWordRecognizer = new KeywordRecognizer(actions.Keys.ToArray(), ConfidenceLevel.Low);
+        keyWordRecognizer = new KeywordRecognizer(actions.Keys.ToArray(), ConfidenceLevel.Medium);
         keyWordRecognizer.OnPhraseRecognized += RecognizedSpeech;
         keyWordRecognizer.Start();
     }

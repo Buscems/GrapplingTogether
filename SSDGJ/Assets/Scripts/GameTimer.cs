@@ -6,7 +6,7 @@ using TMPro;
 public class GameTimer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
-    public static float time = 300;
+    public static float time = 180;
 
     void Start()
     {
@@ -17,7 +17,7 @@ public class GameTimer : MonoBehaviour
     {
         if (timerText != null)
         {
-            time = 300;
+            time = 180;
             timerText.text = "Time Left: 5:00";
             InvokeRepeating("UpdateTimer", 0.0f, 0.01667f);
         }
@@ -32,6 +32,11 @@ public class GameTimer : MonoBehaviour
             string seconds = (time % 60).ToString("00");
             string fraction = ((time * 100) % 100).ToString("000");
             timerText.text = minutes + ":" + seconds;
+        }
+
+        if(time <= 0)
+        {
+            //lose
         }
     }
 }
