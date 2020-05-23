@@ -4,8 +4,9 @@ using UnityEngine;
 using Rewired;
 using Rewired.ControllerExtensions;
 
-public class Look : MonoBehaviour
+public class GrapplingHook : MonoBehaviour
 {
+
     //the following is in order to use rewired
     [Tooltip("Reference for using rewired")]
     [HideInInspector]
@@ -15,46 +16,68 @@ public class Look : MonoBehaviour
     [Tooltip("Number identifier for each player, must be above 0")]
     public int playerNum;
 
-    public float sensitivity;
+    private LineRenderer lr;
+    private Vector3 grapplePoint;
+    public LayerMask grappleMask;
 
-    public Transform body;
+    public Transform gunTip, playerCamera, player;
 
-    float Xrotation;
+    public float maxGrappleDistance;
 
-    Vector2 lookDir;
+    public float maxJointDistance;
+    public float minJointDistance;
+
+    private SpringJoint joint;
 
     private void Awake()
     {
+
         //Rewired Code
         player1 = ReInput.players.GetPlayer(0);
         player2 = ReInput.players.GetPlayer(1);
         ReInput.ControllerConnectedEvent += OnControllerConnected;
+
+        lr = GetComponent<LineRenderer>();
     }
 
-    void Start()
+    private void Update()
     {
-        
+        if (player1.GetButtonDown("Shoot"))
+        {
+            StartGrapple();
+        }
+        else if (player1.GetButtonUp("Shoot"))
+        {
+            StopGrapple();
+        }
     }
 
-    void Update()
+    void StartGrapple()
     {
-        if (playerNum == 1)
+        RaycastHit hit;
+        if (Physics.Raycast(origin: playerCamera.position, direction: playerCamera.forward, out hit, maxGrappleDistance, grappleMask))
         {
-            lookDir.x = player1.GetAxis("LookX") * sensitivity * Time.deltaTime;
-            lookDir.y = player1.GetAxis("LookY") * sensitivity * Time.deltaTime;
-        }
-        else if(playerNum == 2)
-        {
-            lookDir.x = player2.GetAxis("LookX") * sensitivity * Time.deltaTime;
-            lookDir.y = player2.GetAxis("LookY") * sensitivity * Time.deltaTime;
-        }
-        Xrotation -= -lookDir.y;
-        Xrotation = Mathf.Clamp(Xrotation, -90f, 90f);
+            grapplePoint = hit.point;
+            joint = player.gameObject.AddComponent<SpringJoint>();
+            joint.autoConfigureConnectedAnchor = false;
+            joint.connectedAnchor = grapplePoint;
 
-        transform.localRotation = Quaternion.Euler(Xrotation, 0, 0f);
+            float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
 
-        body.Rotate(Vector3.up * lookDir.x);
+            joint.maxDistance = distanceFromPoint * maxJointDistance;
+            joint.minDistance = distanceFromPoint * minJointDistance;
+
+            joint.spring = 4.5f;
+            joint.damper = 7f;
+            joint.massScale = 4.5f;
+        }
     }
+
+    void StopGrapple()
+    {
+
+    } 
+
     //[REWIRED METHODS]
     //these two methods are for ReWired, if any of you guys have any questions about it I can answer them, but you don't need to worry about this for working on the game - Buscemi
     void OnControllerConnected(ControllerStatusChangedEventArgs arg)
@@ -62,6 +85,7 @@ public class Look : MonoBehaviour
         CheckController(player1);
         CheckController(player2);
     }
+
     void CheckController(Player player)
     {
         foreach (Joystick joyStick in player.controllers.Joysticks)
@@ -89,4 +113,5 @@ public class Look : MonoBehaviour
             }
         }
     }
+
 }
