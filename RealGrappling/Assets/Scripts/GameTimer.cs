@@ -6,7 +6,7 @@ using TMPro;
 public class GameTimer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
-    public static float time = 180;
+    public static float time = 119;
 
     void Start()
     {
@@ -17,8 +17,8 @@ public class GameTimer : MonoBehaviour
     {
         if (timerText != null)
         {
-            time = 180;
-            timerText.text = "Time Left: 5:00";
+            time = 119;
+            timerText.text = "Time Left: 2:00";
             InvokeRepeating("UpdateTimer", 0.0f, 0.01667f);
         }
     }

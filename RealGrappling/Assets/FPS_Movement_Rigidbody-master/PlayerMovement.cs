@@ -17,6 +17,14 @@ public class PlayerMovement : MonoBehaviour {
     [Tooltip("Number identifier for each player, must be above 0")]
     public int playerNum;
 
+    public bool playingAlone;
+
+    Vector3 startPos;
+    [HideInInspector]
+    public bool ready;
+
+    public GrapplingHook grappling;
+
     //Assingables
     public Transform playerCam;
     public Transform orientation;
@@ -26,7 +34,7 @@ public class PlayerMovement : MonoBehaviour {
 
     //Rotation and look
     private float xRotation;
-    private float sensitivity = 50f;
+    public float sensitivity;
     private float sensMultiplier = 1f;
     
     //Movement
@@ -35,6 +43,7 @@ public class PlayerMovement : MonoBehaviour {
     public bool grounded;
     public LayerMask whatIsGround;
     Vector3 velocity;
+    float lookX, lookY;
     
     public float counterMovement;
     private float threshold = 0.01f;
@@ -68,6 +77,7 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     void Start() {
+        startPos = transform.position;
         playerScale =  transform.localScale;
         Cursor.visible = false;
     }
@@ -86,17 +96,26 @@ public class PlayerMovement : MonoBehaviour {
     /// Find user input. Should put this in its own class but im lazy
     /// </summary>
     private void MyInput() {
-        if (playerNum == 1)
+        if (!playingAlone)
         {
-            x = player2.GetAxisRaw("MoveX");
-            y = player2.GetAxisRaw("MoveZ");
-            jumping = player1.GetButton("Jump");
+            if (playerNum == 1)
+            {
+                x = player2.GetAxisRaw("MoveX");
+                y = player2.GetAxisRaw("MoveZ");
+                jumping = player1.GetButton("Jump");
+            }
+            if (playerNum == 2)
+            {
+                x = player1.GetAxisRaw("MoveX");
+                y = player1.GetAxisRaw("MoveZ");
+                jumping = player2.GetButton("Jump");
+            }
         }
-        if (playerNum == 2)
+        else
         {
             x = player1.GetAxisRaw("MoveX");
             y = player1.GetAxisRaw("MoveZ");
-            jumping = player2.GetButton("Jump");
+            jumping = player1.GetButton("Jump");
         }
         crouching = Input.GetKey(KeyCode.LeftControl);
      
@@ -213,15 +232,30 @@ public class PlayerMovement : MonoBehaviour {
     
     private float desiredX;
     private void Look() {
-        float mouseX = player1.GetAxis("LookX") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-        float mouseY = player1.GetAxis("LookY") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-
+        if (!playingAlone)
+        {
+            if (playerNum == 1)
+            {
+                lookX = player1.GetAxis("LookX") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+                lookY = player1.GetAxis("LookY") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+            }
+            if (playerNum == 2)
+            {
+                lookX = player2.GetAxis("LookX") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+                lookY = player2.GetAxis("LookY") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+            }
+        }
+        else
+        {
+            lookX = player1.GetAxis("LookX") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+            lookY = player1.GetAxis("LookY") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+        }
         //Find current look rotation
         Vector3 rot = playerCam.transform.localRotation.eulerAngles;
-        desiredX = rot.y + mouseX;
-        
+        desiredX = rot.y + lookX;
+
         //Rotate, and also make sure we dont over- or under-rotate.
-        xRotation -= mouseY;
+        xRotation -= lookY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         //Perform the rotations
@@ -282,7 +316,33 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private bool cancellingGrounded;
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Respawn")
+        {
+            rb.velocity = Vector3.zero;
+            transform.position = startPos;
+            grappling.StopGrapple();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Finish")
+        {
+            ready = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Finish")
+        {
+            ready = false;
+        }
+    }
+
     /// <summary>
     /// Handle ground detection
     /// </summary>

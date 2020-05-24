@@ -16,6 +16,8 @@ public class GrapplingHook : MonoBehaviour
     [Tooltip("Number identifier for each player, must be above 0")]
     public int playerNum;
 
+    public bool playingAlone;
+
     private LineRenderer lr;
     private Vector3 grapplePoint;
     public LayerMask grappleMask;
@@ -42,22 +44,36 @@ public class GrapplingHook : MonoBehaviour
 
     private void Update()
     {
-        if (playerNum == 1)
+        if (!playingAlone)
         {
-            if (player2.GetButtonDown("Shoot"))
+            if (playerNum == 1)
             {
-                StartGrapple();
+                if (player2.GetButtonDown("Shoot"))
+                {
+                    StartGrapple();
+                }
+                else if (player2.GetButtonUp("Shoot"))
+                {
+                    StopGrapple();
+                }
             }
-            else if (player2.GetButtonUp("Shoot"))
+            if (playerNum == 2)
             {
-                StopGrapple();
+                if (player1.GetButtonDown("Shoot"))
+                {
+                    StartGrapple();
+                }
+                else if (player1.GetButtonUp("Shoot"))
+                {
+                    StopGrapple();
+                }
             }
         }
-        if (playerNum == 2)
+        else
         {
             if (player1.GetButtonDown("Shoot"))
             {
-                StartGrapple();
+                StartCoroutine("StartGrapple");
             }
             else if (player1.GetButtonUp("Shoot"))
             {
@@ -71,7 +87,7 @@ public class GrapplingHook : MonoBehaviour
         DrawRope();
     }
 
-    void StartGrapple()
+    IEnumerator StartGrapple()
     {
         RaycastHit hit;
         if (Physics.Raycast(origin: playerCamera.position, direction: playerCamera.forward, out hit, maxGrappleDistance, grappleMask))
@@ -86,11 +102,17 @@ public class GrapplingHook : MonoBehaviour
             joint.maxDistance = distanceFromPoint * maxJointDistance;
             joint.minDistance = distanceFromPoint * minJointDistance;
 
-            joint.spring = 12f;
-            joint.damper = 8f;
-            joint.massScale = 2f;
+            //joint.spring = 75f;
+            //joint.damper = 50f;
+            //joint.massScale = 33f;
+
+            joint.spring = 10;
+            joint.damper = 0;
+            joint.massScale = 5;
 
             lr.positionCount = 2;
+            yield return new WaitForSeconds(.3f);
+            StopGrapple();
 
         }
     }
@@ -102,7 +124,7 @@ public class GrapplingHook : MonoBehaviour
         lr.SetPosition(index: 1, grapplePoint);
     }
 
-    void StopGrapple()
+    public void StopGrapple()
     {
         lr.positionCount = 0;
         Destroy(joint);
