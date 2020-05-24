@@ -42,13 +42,27 @@ public class GrapplingHook : MonoBehaviour
 
     private void Update()
     {
-        if (player1.GetButtonDown("Shoot"))
+        if (playerNum == 1)
         {
-            StartGrapple();
+            if (player2.GetButtonDown("Shoot"))
+            {
+                StartGrapple();
+            }
+            else if (player2.GetButtonUp("Shoot"))
+            {
+                StopGrapple();
+            }
         }
-        else if (player1.GetButtonUp("Shoot"))
+        if (playerNum == 2)
         {
-            StopGrapple();
+            if (player1.GetButtonDown("Shoot"))
+            {
+                StartGrapple();
+            }
+            else if (player1.GetButtonUp("Shoot"))
+            {
+                StopGrapple();
+            }
         }
     }
 

@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour {
     public float maxSpeed;
     public bool grounded;
     public LayerMask whatIsGround;
-    public Vector3 velocity;
+    Vector3 velocity;
     
     public float counterMovement;
     private float threshold = 0.01f;
@@ -86,9 +86,18 @@ public class PlayerMovement : MonoBehaviour {
     /// Find user input. Should put this in its own class but im lazy
     /// </summary>
     private void MyInput() {
-        x = player1.GetAxisRaw("MoveX");
-        y = player1.GetAxisRaw("MoveZ");
-        jumping = player1.GetButton("Jump");
+        if (playerNum == 1)
+        {
+            x = player2.GetAxisRaw("MoveX");
+            y = player2.GetAxisRaw("MoveZ");
+            jumping = player1.GetButton("Jump");
+        }
+        if (playerNum == 2)
+        {
+            x = player1.GetAxisRaw("MoveX");
+            y = player1.GetAxisRaw("MoveZ");
+            jumping = player2.GetButton("Jump");
+        }
         crouching = Input.GetKey(KeyCode.LeftControl);
      
         //Crouching
