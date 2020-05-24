@@ -111,6 +111,8 @@ public class GrapplingHook : MonoBehaviour
             joint.massScale = 5;
 
             lr.positionCount = 2;
+
+            
             yield return new WaitForSeconds(.3f);
             StopGrapple();
 
