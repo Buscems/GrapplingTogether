@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using Rewired;
 using Rewired.ControllerExtensions;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -328,6 +329,11 @@ public class PlayerMovement : MonoBehaviour {
             transform.position = startPos;
             grappling.StopGrapple();
             splash.Play();
+        }
+
+        if (other.tag == "Death")
+        {
+            SceneManager.LoadScene("Title");
         }
     }
 
