@@ -6,6 +6,7 @@ public class IKHand : MonoBehaviour
 {
     public Vector3 target;
     public GameObject gun;
+    public Camera playerCam;
 
     Animator anim;
     float weight = 100;
@@ -21,7 +22,7 @@ public class IKHand : MonoBehaviour
     void Update()
     {
         target = gun.transform.position;
-        transform.forward = Camera.main.transform.forward;
+        transform.forward = playerCam.transform.forward;
         transform.forward = new Vector3(transform.forward.x, 0, transform.forward.z);
     }
 
