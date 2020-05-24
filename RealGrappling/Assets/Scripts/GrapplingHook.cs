@@ -126,8 +126,8 @@ public class GrapplingHook : MonoBehaviour
 
     public void StopGrapple()
     {
-        lr.positionCount = 0;
         Destroy(joint);
+        lr.positionCount = 0;
     } 
 
     public bool IsGrappling()

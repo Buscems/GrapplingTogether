@@ -2049,6 +2049,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 41286673}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &43605544 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 925426840631490857, guid: 6af824f3a667de74b8b9842fd89244d5,
+    type: 3}
+  m_PrefabInstance: {fileID: 769619574}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &43605548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43605544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa249cc47c411c4eb90775b14a72be9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &45130186
 GameObject:
   m_ObjectHideFlags: 0
@@ -5629,9 +5647,10 @@ GameObject:
   - component: {fileID: 141185141}
   - component: {fileID: 141185140}
   - component: {fileID: 141185139}
+  - component: {fileID: 141185143}
   m_Layer: 0
   m_Name: Death (1)
-  m_TagString: Untagged
+  m_TagString: Death
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5710,6 +5729,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &141185143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141185138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e0320f784c38d44a29832478462642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 1}
+  speed: 0.05
+  waitTime: 3
 --- !u!1 &141547382
 GameObject:
   m_ObjectHideFlags: 0
@@ -10870,9 +10904,10 @@ GameObject:
   - component: {fileID: 271479108}
   - component: {fileID: 271479107}
   - component: {fileID: 271479106}
+  - component: {fileID: 271479110}
   m_Layer: 0
   m_Name: Death
-  m_TagString: Untagged
+  m_TagString: Death
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10951,6 +10986,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &271479110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271479105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e0320f784c38d44a29832478462642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: -1}
+  speed: 0.05
+  waitTime: 3
 --- !u!1 &273627624
 GameObject:
   m_ObjectHideFlags: 0
@@ -32986,7 +33036,7 @@ PrefabInstance:
     - target: {fileID: 925426839143526260, guid: 6af824f3a667de74b8b9842fd89244d5,
         type: 3}
       propertyPath: maxGrappleDistance
-      value: 300
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 925426839143526260, guid: 6af824f3a667de74b8b9842fd89244d5,
         type: 3}
@@ -70959,7 +71009,7 @@ PrefabInstance:
     - target: {fileID: 925426839143526260, guid: 6af824f3a667de74b8b9842fd89244d5,
         type: 3}
       propertyPath: maxGrappleDistance
-      value: 300
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 925426839143526260, guid: 6af824f3a667de74b8b9842fd89244d5,
         type: 3}
@@ -76982,6 +77032,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bdab796414cd8347b10b099c4c0ea4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deaths:
+  - {fileID: 271479110}
+  - {fileID: 141185143}
   curseCounter: 0
 --- !u!114 &1825803488
 MonoBehaviour:
@@ -82133,6 +82186,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937531586}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1939086825 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 925426840631490857, guid: 6af824f3a667de74b8b9842fd89244d5,
+    type: 3}
+  m_PrefabInstance: {fileID: 1649020170}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1939086829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939086825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa249cc47c411c4eb90775b14a72be9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1939991694
 GameObject:
   m_ObjectHideFlags: 0
