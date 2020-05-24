@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour {
     [Tooltip("Number identifier for each player, must be above 0")]
     public int playerNum;
 
-    public bool playingAlone;
+    public static bool playingAlone;
 
     Vector3 startPos;
     [HideInInspector]
@@ -68,12 +68,15 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
+    AudioSource splash;
+
     void Awake() {
         rb = GetComponent<Rigidbody>();
         //Rewired Code
         player1 = ReInput.players.GetPlayer(0);
         player2 = ReInput.players.GetPlayer(1);
         ReInput.ControllerConnectedEvent += OnControllerConnected;
+        splash = GetComponent<AudioSource>();
     }
     
     void Start() {
@@ -324,6 +327,7 @@ public class PlayerMovement : MonoBehaviour {
             rb.velocity = Vector3.zero;
             transform.position = startPos;
             grappling.StopGrapple();
+            splash.Play();
         }
     }
 

@@ -15,9 +15,14 @@ public class VoiceRecognition : MonoBehaviour
 
     public int curseCounter;
 
+    AudioSource audio;
+
     // Start is called before the first frame update
     void Start()
     {
+
+        audio = GetComponent<AudioSource>();
+
         actions.Add("fuck", MakeHarder);
         actions.Add("fucking", MakeHarder);
         actions.Add("motherfucker", MakeHarder);
@@ -59,6 +64,7 @@ public class VoiceRecognition : MonoBehaviour
         GameTimer.time -= 10f;
         deaths[0].speed += .05f;
         deaths[1].speed += .05f;
+        audio.Play();
     }
 
     private void Apologize()

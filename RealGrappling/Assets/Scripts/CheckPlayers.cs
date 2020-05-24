@@ -13,6 +13,10 @@ public class CheckPlayers : MonoBehaviour
 
     public GameTimer gt;
 
+    public int level;
+
+    //public Animator
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +29,11 @@ public class CheckPlayers : MonoBehaviour
         
         if(player1.ready && player2.ready)
         {
-            winText.enabled = true;
-            winText.text = "Yin Wou.";
+            if (level == 2)
+            {
+                winText.enabled = true;
+                winText.text = "Yin Wou.";
+            }
             timer.enabled = false;
             gt.enabled = false;
         }

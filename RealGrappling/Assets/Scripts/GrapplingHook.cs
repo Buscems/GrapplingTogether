@@ -16,7 +16,7 @@ public class GrapplingHook : MonoBehaviour
     [Tooltip("Number identifier for each player, must be above 0")]
     public int playerNum;
 
-    public bool playingAlone;
+    public static bool playingAlone;
 
     private LineRenderer lr;
     private Vector3 grapplePoint;
@@ -50,7 +50,8 @@ public class GrapplingHook : MonoBehaviour
             {
                 if (player2.GetButtonDown("Shoot"))
                 {
-                    StartGrapple();
+                    Debug.Log("pls2");
+                    StartCoroutine("StartGrapple");
                 }
                 else if (player2.GetButtonUp("Shoot"))
                 {
@@ -61,7 +62,8 @@ public class GrapplingHook : MonoBehaviour
             {
                 if (player1.GetButtonDown("Shoot"))
                 {
-                    StartGrapple();
+                    Debug.Log("pls1");
+                    StartCoroutine(StartGrapple());
                 }
                 else if (player1.GetButtonUp("Shoot"))
                 {
@@ -122,6 +124,7 @@ public class GrapplingHook : MonoBehaviour
     void DrawRope()
     {
         if (!joint) return;
+        lr.positionCount = 2;
         lr.SetPosition(index: 0, gunTip.position);
         lr.SetPosition(index: 1, grapplePoint);
     }
