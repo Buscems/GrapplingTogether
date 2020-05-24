@@ -72,9 +72,9 @@ public class GrapplingHook : MonoBehaviour
             joint.maxDistance = distanceFromPoint * maxJointDistance;
             joint.minDistance = distanceFromPoint * minJointDistance;
 
-            joint.spring = 8f;
-            joint.damper = 6f;
-            joint.massScale = 6f;
+            joint.spring = 12f;
+            joint.damper = 8f;
+            joint.massScale = 2f;
 
             lr.positionCount = 2;
 
