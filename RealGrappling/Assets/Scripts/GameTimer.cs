@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameTimer : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class GameTimer : MonoBehaviour
 
         if(time <= 0)
         {
-            //lose
+            SceneManager.LoadScene("Title");
         }
     }
 }
