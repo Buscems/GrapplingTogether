@@ -81,6 +81,10 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     void Start() {
+        if(SceneManager.GetActiveScene().name == "Title")
+        {
+            playingAlone = false;
+        }
         startPos = transform.position;
         playerScale =  transform.localScale;
         Cursor.visible = false;

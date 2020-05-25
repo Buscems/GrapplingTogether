@@ -8,10 +8,23 @@ public class GoToNextLevel : MonoBehaviour
 
     public int playerAmount;
 
+    int currentLevel;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(SceneManager.GetActiveScene().name == "Title")
+        {
+            currentLevel = 0;
+        }
+        if (SceneManager.GetActiveScene().name == "Level1")
+        {
+            currentLevel = 1;
+        }
+        if (SceneManager.GetActiveScene().name == "Level2")
+        {
+            currentLevel = 2;
+        }
     }
 
     // Update is called once per frame
@@ -20,7 +33,7 @@ public class GoToNextLevel : MonoBehaviour
         
     }
 
-    public void NextLevel(int currentLevel)
+    public void NextLevel()
     {
         switch (currentLevel)
         {
@@ -41,7 +54,7 @@ public class GoToNextLevel : MonoBehaviour
                 SceneManager.LoadScene("Level2");
                 break;
             case 2:
-
+                SceneManager.LoadScene("Title");
                 break;
         }
     }

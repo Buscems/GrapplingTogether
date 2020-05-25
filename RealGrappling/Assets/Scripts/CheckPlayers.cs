@@ -15,7 +15,9 @@ public class CheckPlayers : MonoBehaviour
 
     public int level;
 
-    //public Animator
+    public Death[] deaths;
+
+    public Animator fade;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,12 @@ public class CheckPlayers : MonoBehaviour
                 winText.enabled = true;
                 winText.text = "Yin Wou.";
             }
+            else
+            {
+                fade.SetTrigger("Fade");
+            }
+            deaths[0].speed = 0;
+            deaths[1].speed = 0;
             timer.enabled = false;
             gt.enabled = false;
         }

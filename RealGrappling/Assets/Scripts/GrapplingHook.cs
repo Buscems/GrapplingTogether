@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
 using Rewired.ControllerExtensions;
+using UnityEngine.SceneManagement;
 
 public class GrapplingHook : MonoBehaviour
 {
@@ -40,6 +41,12 @@ public class GrapplingHook : MonoBehaviour
         ReInput.ControllerConnectedEvent += OnControllerConnected;
 
         lr = GetComponent<LineRenderer>();
+
+        if (SceneManager.GetActiveScene().name == "Title")
+        {
+            playingAlone = false;
+        }
+
     }
 
     private void Update()
